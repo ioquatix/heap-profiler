@@ -4,7 +4,6 @@ require "test_helper"
 module HeapProfiler
   class ResultsTest < Minitest::Test
     def test_full_results
-      skip("This test is too fragile for CI") if ENV["CI"]
       Dir.mktmpdir do |dir|
         assert_equal true, system(File.expand_path('../../bin/generate-report', __FILE__), dir)
 
@@ -12,24 +11,21 @@ module HeapProfiler
         io = StringIO.new
         results.pretty_print(io, scale_bytes: true, normalize_paths: true)
         assert_equal <<~EOS, io.string
-          Total allocated: 4.12 kB (36 objects)
-          Total retained: 624.00 B (10 objects)
+          Total allocated: 3.89 kB (35 objects)
+          Total retained: 392.00 B (9 objects)
 
           allocated memory by gem
           -----------------------------------
              3.56 kB  heap-profiler/bin
             336.00 B  other
-            232.00 B  heap-profiler/lib
 
           allocated memory by file
           -----------------------------------
              3.56 kB  heap-profiler/bin/generate-report
-            232.00 B  heap-profiler/lib/heap_profiler/reporter.rb
 
           allocated memory by location
           -----------------------------------
              3.09 kB  heap-profiler/bin/generate-report:29
-            232.00 B  heap-profiler/lib/heap_profiler/reporter.rb:89
             157.00 B  heap-profiler/bin/generate-report:23
              72.00 B  heap-profiler/bin/generate-report:17
              40.00 B  heap-profiler/bin/generate-report:26
@@ -46,7 +42,6 @@ module HeapProfiler
             597.00 B  String
             528.00 B  Hash
             384.00 B  <ment> (IMEMO)
-            232.00 B  File
             112.00 B  Array
              80.00 B  <ifunc> (IMEMO)
              80.00 B  <cref> (IMEMO)
@@ -57,17 +52,14 @@ module HeapProfiler
           -----------------------------------
                   33  heap-profiler/bin
                    2  other
-                   1  heap-profiler/lib
 
           allocated objects by file
           -----------------------------------
                   33  heap-profiler/bin/generate-report
-                   1  heap-profiler/lib/heap_profiler/reporter.rb
 
           allocated objects by location
           -----------------------------------
                   25  heap-profiler/bin/generate-report:29
-                   1  heap-profiler/lib/heap_profiler/reporter.rb:89
                    1  heap-profiler/bin/generate-report:26
                    1  heap-profiler/bin/generate-report:25
                    1  heap-profiler/bin/generate-report:23
@@ -89,21 +81,17 @@ module HeapProfiler
                    2  <cref> (IMEMO)
                    1  Symbol
                    1  SomeCustomStuff
-                   1  File
 
           retained memory by gem
           -----------------------------------
             392.00 B  heap-profiler/bin
-            232.00 B  heap-profiler/lib
 
           retained memory by file
           -----------------------------------
             392.00 B  heap-profiler/bin/generate-report
-            232.00 B  heap-profiler/lib/heap_profiler/reporter.rb
 
           retained memory by location
           -----------------------------------
-            232.00 B  heap-profiler/lib/heap_profiler/reporter.rb:89
             160.00 B  heap-profiler/bin/generate-report:29
              72.00 B  heap-profiler/bin/generate-report:17
              40.00 B  heap-profiler/bin/generate-report:21
@@ -114,7 +102,6 @@ module HeapProfiler
           retained memory by class
           -----------------------------------
             240.00 B  String
-            232.00 B  File
              72.00 B  Array
              40.00 B  Symbol
              40.00 B  SomeCustomStuff
@@ -122,17 +109,14 @@ module HeapProfiler
           retained objects by gem
           -----------------------------------
                    9  heap-profiler/bin
-                   1  heap-profiler/lib
 
           retained objects by file
           -----------------------------------
                    9  heap-profiler/bin/generate-report
-                   1  heap-profiler/lib/heap_profiler/reporter.rb
 
           retained objects by location
           -----------------------------------
                    4  heap-profiler/bin/generate-report:29
-                   1  heap-profiler/lib/heap_profiler/reporter.rb:89
                    1  heap-profiler/bin/generate-report:21
                    1  heap-profiler/bin/generate-report:20
                    1  heap-profiler/bin/generate-report:19
@@ -144,7 +128,6 @@ module HeapProfiler
                    6  String
                    1  Symbol
                    1  SomeCustomStuff
-                   1  File
                    1  Array
 
           Allocated String Report
